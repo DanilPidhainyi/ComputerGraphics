@@ -13,6 +13,7 @@ def sleep(method):
         root.update()
         time.sleep(0.1)
         return method(self)
+
     return wait
 
 
@@ -29,13 +30,17 @@ class Diamond1(Canvas):
                                 [350, 400]])
         self.canvas.pack(fill=BOTH, expand=1)
 
+    def coordinates_processing(self):
+        coordinates = []
+        tuple(map(lambda x: coordinates.extend(map(int, x.tolist())), self.matrix))
+        return coordinates
+
     @sleep
     def draw(self):  # task 1
         self.canvas.create_rectangle(0, 0, 800, 800,
                                      fill="#6e6e6e")
-        coordinates = []
-        tuple(map(lambda x: coordinates.extend(map(int, x.tolist())), self.matrix))
-        self.canvas.create_polygon(*coordinates,
+
+        self.canvas.create_polygon(*self.coordinates_processing(),
                                    outline='#d1d100',
                                    fill='#ffff00', width=5
                                    )
@@ -60,6 +65,11 @@ class Diamond2(Diamond1):
     def __init__(self):
         super().__init__()
         self.matrix = tuple(np.array(i) for i in self.matrix)
+
+    def coordinates_processing(self):
+        coordinates = []
+        tuple(map(lambda x: coordinates.extend(map(int, *x.tolist())), self.matrix))
+        return coordinates
 
     def scale(self, coefficient):  # task 2
         self.matrix = tuple(map(lambda x: x.dot(np.diag([coefficient] * 2)), self.matrix))
@@ -107,10 +117,10 @@ def test(obj):
 
 
 if __name__ == '__main__':
-    diamond1 = Diamond1()
-    # diamond2 = Diamond2()
+    #diamond1 = Diamond1()
+    diamond2 = Diamond2()
     # diamond3 = Diamond3()
-    test(diamond1)
+    #test(diamond1)
 
-    # test(diamond2)
+    test(diamond2)
     # print(diamond2.draw())
