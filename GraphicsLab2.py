@@ -3,11 +3,17 @@ import numpy as np
 from math import cos, sin
 import time
 
+root = Tk()
+root.geometry("800x800")
 
-def sleep():
-    root.update_idletasks()
-    root.update()
-    time.sleep(0.1)
+
+def sleep(method):
+    def wait(self):
+        root.update_idletasks()
+        root.update()
+        time.sleep(0.1)
+        return method(self)
+    return wait
 
 
 class Diamond1(Canvas):
@@ -28,7 +34,7 @@ class Diamond1(Canvas):
         self.canvas.create_rectangle(0, 0, 800, 800,
                                      fill="#6e6e6e")
         coordinates = []
-        tuple(map(lambda x: coordinates.extend(map(round, *x.tolist())), self.matrix))
+        tuple(map(lambda x: coordinates.extend(map(int, x.tolist())), self.matrix))
         self.canvas.create_polygon(*coordinates,
                                    outline='#d1d100',
                                    fill='#ffff00', width=5
@@ -94,18 +100,17 @@ def test(obj):
             obj.turn(50).scale(1.2).move(x=-185, y=70).draw()
         for i in range(5):
             obj.turn(50).scale(0.834).move(x=-20, y=180).draw()
-        obj.matrix = np.array([[400, 300],   # зброс до завоцьких
+        obj.matrix = np.array([[400, 300],  # зброс до завоцьких
                                [450, 400],
                                [400, 500],
                                [350, 400]])
 
 
 if __name__ == '__main__':
-    root = Tk()
-    root.geometry("800x800")
     diamond1 = Diamond1()
     # diamond2 = Diamond2()
     # diamond3 = Diamond3()
     test(diamond1)
+
     # test(diamond2)
     # print(diamond2.draw())
