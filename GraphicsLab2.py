@@ -78,6 +78,7 @@ class Diamond2(Diamond1):
     def turn(self, angle):  # task 2
         self.matrix = tuple(map(lambda x: x.dot([[cos(angle), sin(angle)],
                                                  [-sin(angle), cos(angle)]]), self.matrix))
+        print(*self.matrix)
         return self
 
     def move(self, x=0.0, y=0.0):  # task 2
@@ -90,17 +91,24 @@ class Diamond3(Diamond2):
     def __init__(self):
         super().__init__()
 
+    def coordinates_processing(self):
+        return Diamond1.coordinates_processing(self)
+
     def scale(self, coefficient):  # task 3
-        self.matrix = tuple(map(lambda x: x.dot(np.diag([coefficient] * 2)), self.matrix))
+        # кожну кординату множем на коеф.
+        self.matrix = tuple(map(lambda x: np.array(tuple(coord * coefficient for coord in x)),
+                                self.matrix))
         return self
 
     def turn(self, angle):  # task 3
-        self.matrix = tuple(map(lambda x: x.dot([[cos(angle), sin(angle)],
-                                                 [-sin(angle), cos(angle)]]), self.matrix))
+        self.matrix = tuple(map(lambda item: np.array((item[0] * cos(angle) - item[1] * sin(angle),
+                                                       item[0] * sin(angle) + item[1] * cos(angle))),
+                                self.matrix))
         return self
 
     def move(self, x=0.0, y=0.0):  # task 3
-        self.matrix = tuple(map(lambda item: item + np.array([[x, y]]), self.matrix))
+        self.matrix = tuple(map(lambda item: np.array((item[0] + x,
+                                                       item[1] + y)), self.matrix))
         return self
 
 
@@ -117,10 +125,9 @@ def test(obj):
 
 
 if __name__ == '__main__':
-    #diamond1 = Diamond1()
-    diamond2 = Diamond2()
-    # diamond3 = Diamond3()
-    #test(diamond1)
-
-    test(diamond2)
-    # print(diamond2.draw())
+    # diamond1 = Diamond1()
+    # test(diamond1)
+    # diamond2 = Diamond2()
+    # test(diamond2)
+    diamond3 = Diamond3()
+    test(diamond3)
