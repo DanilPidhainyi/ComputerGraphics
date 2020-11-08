@@ -77,12 +77,10 @@ class Parallelepiped(Canvas):
             return (self.a * sin(radians(angle)) + point[1]) * cos(radians(80))
 
         r = lambda: random.randint(0, 255)
-        random_colors = tuple(('#%02X%02X%02X' % (r(), r(), r())) for i in range(5))
-        for i in range(0, 180, 10):
+        random_colors = tuple(('#%02X%02X%02X' % (r(), r(), r())) for i in range(6))
+        for i in range(0, 120, 10):
             self.draw([(forX(i + j), forY(i + j)) for j in range(0, 271, 90)], hue,
                       random_colors)
-
-
         return self
 
     def ran(self):
