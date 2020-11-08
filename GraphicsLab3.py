@@ -1,5 +1,6 @@
 from tkinter import *
 import numpy as np
+import random
 from math import cos, sin, radians
 import time
 
@@ -27,19 +28,19 @@ class Parallelepiped(Canvas):
         self.a = 150  # довжина сторини
         a = self.a
         self.o = (300, 300, 400)  # початкова точка
-        self.matrix = np.array([[self.o[0],     self.o[1],     self.o[2],     1],
-                                [self.o[0] - a, self.o[1],     self.o[2],     1],
-                                [self.o[0] - a, self.o[1] - a, self.o[2],     1],
-                                [self.o[0],     self.o[1] - a, self.o[2],     1],
-                                [self.o[0],     self.o[1],     self.o[2] - a, 1],
-                                [self.o[0] - a, self.o[1],     self.o[2] - a, 1],
+        self.matrix = np.array([[self.o[0], self.o[1], self.o[2], 1],
+                                [self.o[0] - a, self.o[1], self.o[2], 1],
+                                [self.o[0] - a, self.o[1] - a, self.o[2], 1],
+                                [self.o[0], self.o[1] - a, self.o[2], 1],
+                                [self.o[0], self.o[1], self.o[2] - a, 1],
+                                [self.o[0] - a, self.o[1], self.o[2] - a, 1],
                                 [self.o[0] - a, self.o[1] - a, self.o[2] - a, 1],
-                                [self.o[0],     self.o[1] - a, self.o[2] - a, 1],
+                                [self.o[0], self.o[1] - a, self.o[2] - a, 1],
                                 ])
         self.canvas.pack(fill=BOTH, expand=1)
 
     @sleep
-    def draw(self, matrix, dye):
+    def draw(self, matrix, dye, random_colors):
         self.canvas.delete(ALL)
         self.canvas.create_rectangle(0, 0, 800, 800, fill="#6e6e6e")
         # малюєм верхній паралелограм
@@ -53,12 +54,12 @@ class Parallelepiped(Canvas):
         # малюємо ребра
         for item in matrix:
             self.canvas.create_polygon(item[0], item[1], item[0], item[1] - 100,
-                                        outline=dye,
-                                        fill='#ffff00', width=7)
+                                       outline=dye,
+                                       fill='#ffff00', width=7)
         return self
 
     def projection(self):
-        return self.matrix\
+        return self.matrix \
             .dot([[cos(120), 0, -sin(120), 0],
                   [0, 1, 0, 0],
                   [sin(120), 0, cos(120), 0],
@@ -75,18 +76,25 @@ class Parallelepiped(Canvas):
         def forY(angle):
             return (self.a * sin(radians(angle)) + point[1]) * cos(radians(80))
 
-        for i in range(180):
-            self.draw([(forX(i + j), forY(i + j)) for j in range(0, 271, 90)], hue)
+        r = lambda: random.randint(0, 255)
+        random_colors = tuple(('#%02X%02X%02X' % (r(), r(), r())) for i in range(5))
+        for i in range(0, 180, 10):
+            self.draw([(forX(i + j), forY(i + j)) for j in range(0, 271, 90)], hue,
+                      random_colors)
+
 
         return self
+
+    def ran(self):
+        while 1:
+            color = iter(("#732bf0", "#2becf0", "#A4C639", "#fc884e", "#CD00CD"))
+            self.turn((400, 2300), next(color))
+            self.turn((200, 800), next(color))
+            self.turn((600, 800), next(color))
+            self.turn((600, 3800), next(color))
+            self.turn((200, 3800), next(color))
 
 
 if __name__ == '__main__':
     obj = Parallelepiped()
-    while 1:
-        color = iter(("#732bf0", "#2becf0", "#A4C639", "#fc884e", "#CD00CD"))
-        obj.turn((400, 2500), next(color))
-        obj.turn((200, 1000), next(color))
-        obj.turn((600, 1000), next(color))
-        obj.turn((600, 4000), next(color))
-        obj.turn((200, 4000), next(color))
+    obj.ran()
